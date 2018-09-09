@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"kaki-ireru/internal/provider"
 	"os"
 )
 
@@ -15,6 +16,5 @@ func main () {
 		panic("failed to connect to database")
 	}
 	defer db.Close()
-
-
+	provider.InitDatabase(db)
 }
