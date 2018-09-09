@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"kaki-ireru/internal/provider"
+	"kaki-ireru/web"
 	"os"
 )
 
@@ -17,4 +19,8 @@ func main () {
 	}
 	defer db.Close()
 	provider.InitDatabase(db)
+
+	router := gin.Default()
+	web.RegistryRoutes(router)
+	router.Run()
 }
