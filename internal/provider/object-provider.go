@@ -35,7 +35,7 @@ func CreateNote(note *models.Note) *models.Note {
 }
 
 func UpdateNote(note *models.Note) *models.Note {
-	if err := db.Create(&note).Error; err != nil {
+	if err := db.Save(&note).Error; err != nil {
 		fmt.Println(err)
 	}
 	return note
