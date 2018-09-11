@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"kaki-ireru/internal/provider"
-	"kaki-ireru/web"
+	"kaki-ireru/web/routes"
 	"os"
 )
 
@@ -21,9 +21,11 @@ func main () {
 		panic("failed to connect to database")
 	}
 	defer db.Close()
+	// todo: remove the following line - is only for some tests
+	// db.Exec("DROP TABLE users;")
 	provider.InitDatabase(db)
 
 	router := gin.Default()
-	web.RegistryRoutes(router)
+	routes.RegistryRoutes(router)
 	router.Run()
 }
