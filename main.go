@@ -12,6 +12,9 @@ import (
 var db *gorm.DB
 var err error
 
+// First: Open db connection pool
+// Second: Initialize the provider from internal package
+// Third: Create the gin router and run it
 func main () {
 	db, _ = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
