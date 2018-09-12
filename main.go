@@ -22,7 +22,7 @@ func main () {
 	}
 	defer db.Close()
 	// todo: remove the following line - is only for some tests
-	// db.Exec("DROP TABLE users;")
+	//db.Exec("DROP TABLE users;")
 	provider.InitDatabase(db)
 
 	router := gin.Default()

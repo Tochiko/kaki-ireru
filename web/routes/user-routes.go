@@ -7,5 +7,5 @@ import (
 
 func registryUserRoutes (router gin.IRouter) {
 	router.POST("/users", controllers.CreateUser)
-	router.POST("/login", controllers.VerifyUser)
+	router.POST("/login", controllers.Login)
 }
