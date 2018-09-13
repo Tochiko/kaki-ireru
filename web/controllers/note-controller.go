@@ -1,4 +1,4 @@
-package web
+package controllers
 
 import (
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 // Handler to GET a list resource of .../notes
 // An array of note objects will be respond
 // If not notes are found the response contains an empty array
-func notesFindHandler(c *gin.Context) {
+func NotesFindHandler(c *gin.Context) {
 	notes := provider.FindNotes()
 	c.JSON(http.StatusOK, notes)
 }
@@ -19,7 +19,7 @@ func notesFindHandler(c *gin.Context) {
 // Handler to POST a new note
 // The request body is bounded to the note struct and then created
 // A new note is the response
-func notesCreationHandler (c *gin.Context) {
+func NotesCreationHandler (c *gin.Context) {
 	var note models.Note
 	c.BindJSON(&note)
 	provider.CreateNote(&note)
@@ -29,7 +29,7 @@ func notesCreationHandler (c *gin.Context) {
 // Handler to PUT a note
 // The request body is bounded tho the note struct and then replaced
 // Replaced note is the response
-func notesReplaceHandler (c *gin.Context) {
+func NotesReplaceHandler (c *gin.Context) {
 	var note models.Note
 	c.BindJSON(&note)
 	provider.UpdateNote(&note)
@@ -40,7 +40,7 @@ func notesReplaceHandler (c *gin.Context) {
 // If the id isn't an int a 400 is respond
 // If the id does not refer a note a 404 is respond
 // Else the response contains the requested note
-func notesFindByIdHandler (c *gin.Context) {
+func NotesFindByIdHandler (c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "path param id have to be an integer"})
@@ -57,7 +57,7 @@ func notesFindByIdHandler (c *gin.Context) {
 // Delete a note by their id
 // If the id isn't an int a 400 is respond
 // Else the node will be deleted
-func notesDeletionHandler (c *gin.Context) {
+func NotesDeletionHandler (c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "path param id have to be an integer"})
