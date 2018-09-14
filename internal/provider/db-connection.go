@@ -13,4 +13,5 @@ func InitDatabase (connectionPool *gorm.DB) {
 	Db = connectionPool
 	Db.AutoMigrate(models.Note{})
 	Db.AutoMigrate(models.User{})
+	Db.AutoMigrate(models.UserNote{})
 }

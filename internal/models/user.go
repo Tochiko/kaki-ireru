@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	Id uint64 `gorm:"primary_key"json:"id"binding:"required"`
+	Id int `gorm:"primary_key"json:"id"binding:"required"`
 
 	// e-mail address from user - will be used as "user-name"
 	EMailAddress string `gorm:"unique"json:"eMailAddress"binding:"required"`
@@ -11,4 +11,6 @@ type User struct {
 
 	// That's the persisted password in db
 	PasswordHashed string
+
+
 }

@@ -9,6 +9,7 @@ import (
 	"kaki-ireru/internal/provider"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -44,12 +45,13 @@ func Login (c *gin.Context) {
 		c.Status(http.StatusUnauthorized)
 		return
 	}
-	verification := provider.VerifyUser(authPair[0], authPair[1])
+	id, verification := provider.VerifyUser(authPair[0], authPair[1])
 	if verification {
 		c.Header("WWW-Authenticate", "")
 		token := jwt.New(jwt.SigningMethodHS256)
 		claims := token.Claims.(jwt.MapClaims)
-		claims["name"] = authPair[0]
+		claims["id"] = strconv.Itoa(id)
+		claims["eMail"] = authPair[0]
 		claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 		tokenString, err := token.SignedString([]byte(os.Getenv("HS_PRIVATE_KEY")))
 		if err != nil {

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"kaki-ireru/internal/models"
 	"kaki-ireru/internal/provider"
@@ -12,7 +13,14 @@ import (
 // An array of note objects will be respond
 // If not notes are found the response contains an empty array
 func NotesFindHandler(c *gin.Context) {
-	notes := provider.FindNotes()
+	claims, _ := c.Get("decoded")
+	claimsMap := claims.(jwt.MapClaims)
+	idStr, _ := claimsMap["id"].(string)
+	id, _ := strconv.Atoi(idStr)
+	eMail, _ := claimsMap["eMail"].(string)
+	user := models.User{id, eMail, "", ""}
+
+	notes := provider.FindNotes(&user)
 	c.JSON(http.StatusOK, notes)
 }
 
@@ -20,9 +28,16 @@ func NotesFindHandler(c *gin.Context) {
 // The request body is bounded to the note struct and then created
 // A new note is the response
 func NotesCreationHandler (c *gin.Context) {
+	 // var user models.User
+	claims, _ := c.Get("decoded")
+	claimsMap := claims.(jwt.MapClaims)
+	idStr, _ := claimsMap["id"].(string)
+	id, _ := strconv.Atoi(idStr)
+	eMail, _ := claimsMap["eMail"].(string)
+	user := models.User{id, eMail, "", ""}
 	var note models.Note
 	c.BindJSON(&note)
-	provider.CreateNote(&note)
+	provider.CreateNote(&note, &user)
 	c.JSON(http.StatusCreated, note)
 }
 

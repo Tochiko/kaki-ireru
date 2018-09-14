@@ -15,13 +15,14 @@ func CreateUser (user *models.User) (error) {
 	}
 }
 
-func VerifyUser (eMail string, password string) (verification bool) {
+func VerifyUser (eMail string, password string) (id int, verification bool) {
 	var user models.User
 	if err := Db.Where("e_mail_address = ?", eMail).First(&user).Error; err != nil {
 		verification = false
 		return
 	}
 	verification = compareHashedPassword(&user, password)
+	id = user.Id
 	return
 }
 

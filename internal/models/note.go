@@ -8,3 +8,8 @@ type Note struct {
 	Description string `json:"description"binding:"required"`
 	Done bool `json:"done"binding:"required"`
 }
+
+type UserNote struct {
+	IdUser int `gorm:"primary_key"`
+	IdNote int `gorm:"primary_key"`
+}
