@@ -12,5 +12,6 @@ type User struct {
 	// That's the persisted password in db
 	PasswordHashed string
 
-
+	// Many to Many relation trough user_notes linkage
+	Notes []*Note `gorm:"many2many:user_notes;"`
 }

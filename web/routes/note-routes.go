@@ -11,6 +11,7 @@ import (
 func registryNoteRoutes(router gin.IRouter) {
 	notes := router.Group("/notes")
 	notes.Use(middleware.TokenDecoding)
+	notes.Use(middleware.ParseUserClaims)
 
 	notes.GET("/", controllers.NotesFindHandler)
 	notes.POST("/", controllers.NotesCreationHandler)
