@@ -12,7 +12,12 @@ import (
 // An array of note objects will be respond
 // If not notes are found the response contains an empty array
 func NotesFindHandler(c *gin.Context) {
-	notes := provider.FindNotes()
+	user, exists := getUserFromContext(c)
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "something's gone wrong please try it again"})
+		return
+	}
+	notes := provider.FindNotes(user)
 	c.JSON(http.StatusOK, notes)
 }
 
@@ -20,9 +25,14 @@ func NotesFindHandler(c *gin.Context) {
 // The request body is bounded to the note struct and then created
 // A new note is the response
 func NotesCreationHandler (c *gin.Context) {
+	user, exists := getUserFromContext(c)
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "something's gone wrong please try it again"})
+		return
+	}
 	var note models.Note
 	c.BindJSON(&note)
-	provider.CreateNote(&note)
+	provider.CreateNote(&note, user)
 	c.JSON(http.StatusCreated, note)
 }
 
@@ -60,11 +70,23 @@ func NotesFindByIdHandler (c *gin.Context) {
 func NotesDeletionHandler (c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "path param id have to be an integer"})
-	} else {
-		provider.DeleteNote(id)
-		c.Status(http.StatusNoContent)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "path param id have to be an integer"})
+		return
+	}
+	user, exists := getUserFromContext(c)
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "something's gone wrong please try it again"})
+		return
 	}
 
+	note := &models.Note{Id: id, Title: "", Description: "", Done: false}
+	provider.DeleteNote(note, user)
+	c.Status(http.StatusNoContent)
+	return
+}
 
+func getUserFromContext (c *gin.Context) (*models.User, bool){
+	u, exists := c.Get("user")
+	user := u.(*models.User)
+	return user, exists
 }

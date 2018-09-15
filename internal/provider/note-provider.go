@@ -7,8 +7,8 @@ import (
 
 
 // Find all notes and return an array of notes
-func FindNotes() (notes []*models.Note) {
-	if err := Db.Find(&notes).Error; err != nil {
+func FindNotes(user *models.User) (notes []*models.Note) {
+	if err := Db.Model(&user).Related(&notes, "Notes").Error; err != nil {
 		fmt.Println(err)
 	}
 	return
@@ -21,9 +21,13 @@ func GetNote(id int) (note models.Note, err error) {
 }
 
 // Create new note and return it
-func CreateNote(note *models.Note) *models.Note {
-	if err := Db.Create(&note).Error; err != nil {
+func CreateNote(note *models.Note, user *models.User) *models.Note {
+	if err := Db.Create(note).Error; err != nil {
 		fmt.Println(err)
+	} else {
+		if err := Db.Model(&user).Association("Notes").Append(note).Error; err != nil {
+			fmt.Println(err)
+		}
 	}
 	return note
 }
@@ -37,8 +41,12 @@ func UpdateNote(note *models.Note) *models.Note {
 }
 
 // Delete a note by given id
-func DeleteNote(id int) {
-	if err := Db.Delete(&models.Note{id, "", "", false}).Error; err != nil {
+func DeleteNote(note *models.Note, user *models.User) {
+	if err := Db.Model(&user).Association("Notes").Delete(note).Error; err != nil {
 		fmt.Println(err)
+	} else {
+		if err := Db.Delete(note).Error; err != nil {
+			fmt.Println(err)
+		}
 	}
 }

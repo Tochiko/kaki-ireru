@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// TODO: Because aborting request cycle the logger middleware is not used...  
+
 // Middleware function for gin gonic
 // Bearer tokens are decoded and set to context
 // In cases of errors or invalid tokens the request cycle is interrupted with corresponding status and message
