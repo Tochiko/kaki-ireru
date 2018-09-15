@@ -33,7 +33,8 @@ func NotesCreationHandler (c *gin.Context) {
 	var note models.Note
 	c.BindJSON(&note)
 	provider.CreateNote(&note, user)
-	c.JSON(http.StatusCreated, note)
+	c.JSON(http.StatusCreated, &note)
+	return
 }
 
 // Handler to PUT a note
