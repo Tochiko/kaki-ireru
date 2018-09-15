@@ -15,7 +15,6 @@ func ParseUserClaims (c *gin.Context) {
 	claimsMap := claims.(jwt.MapClaims)
 	idStr, _ := claimsMap["id"].(string)
 	id, _ := strconv.Atoi(idStr)
-	eMail, _ := claimsMap["eMail"].(string)
-	user := models.User{id, eMail, "", "", nil}
+	user := models.User{id, "", "", "", nil}
 	c.Set("user", &user)
 }
