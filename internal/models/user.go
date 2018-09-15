@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	Id int `gorm:"primary_key"json:"id"binding:"required"`
+	Id int `gorm:"primary_key"json:"id"`
 
 	// e-mail address from user - will be used as "user-name"
 	EMailAddress string `gorm:"unique"json:"eMailAddress"binding:"required"`
