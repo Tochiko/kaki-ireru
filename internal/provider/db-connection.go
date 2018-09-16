@@ -7,7 +7,6 @@ import (
 
 var Db *gorm.DB
 
-
 // Initialize the database var from provider
 func InitDatabase (connectionPool *gorm.DB) {
 	Db = connectionPool
