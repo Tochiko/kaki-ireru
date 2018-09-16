@@ -37,7 +37,7 @@ extract token strings from http authorization header
 in case of errors a descriptive message is returned
  */
 func extractTokenString (c *gin.Context) (tokenString string, err error) {
-	errorMessage := "you have to set a valid bearer token to use this service"
+	errorMessage := "you have to set the authorization header with bearer token correctly to use this service"
 	// get the authorization header from context - if it's empty an error is returned
 	authString := c.GetHeader("Authorization")
 	if authString == "" {

@@ -9,14 +9,11 @@ import (
 	"os"
 )
 
-var db *gorm.DB
-var err error
-
 // First: Open db connection pool
 // Second: Initialize the provider from internal package
 // Third: Create the gin router and run it
 func main () {
-	db, _ = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic("failed to connect to database")
 	}
