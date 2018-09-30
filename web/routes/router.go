@@ -6,9 +6,7 @@ import (
 	"kaki-ireru/web/middleware"
 )
 
-// Registry routes and http methods to given gin router
-// Corresponding handler functions are referred
-func registryNoteRoutes(router gin.IRouter) {
+func RegistryRoutes (router gin.IRouter) {
 	notes := router.Group("/notes")
 	notes.Use(middleware.TokenDecoding)
 

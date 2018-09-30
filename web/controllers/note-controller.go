@@ -34,7 +34,7 @@ func NotesCreationHandler (c *gin.Context) {
 	var note models.Note
 	c.BindJSON(&note)
 	// create the note object and refer it to corresponding user
-	_, err := provider.CreateNote(&note, user)
+	_, err := provider.CreateNote(user, note)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
@@ -94,7 +94,7 @@ func NotesDeletionHandler (c *gin.Context) {
 	user := getUserFromClaims(c)
 	note := &models.Note{Id: id, Title: "", Description: "", Done: false}
 	// delete the relation and the note
-	err = provider.DeleteNote(note, user)
+	err = provider.DeleteNote(user, note)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
@@ -119,8 +119,9 @@ func getUserFromClaims (c *gin.Context) (user *models.User) {
 	// get the value from the id field from claims
 	// mapClaims are typed as map[string]interface{} and the id is parsed from json so it's typed as float64
 	// to get the id as int use type assertion to receive a float64 from the claimsMap and create an int with it
-	id := int(claimsMap["id"].(float64))
+	id := claimsMap["sub"].(string)
+	user = &models.User{Id: id}
+
 	// create a user object with id and set it to context
-	user = &models.User{id, "", "", "", nil}
 	return
 }

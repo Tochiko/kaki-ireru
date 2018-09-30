@@ -1,16 +1,7 @@
 package models
 
 type User struct {
-	Id int `gorm:"primary_key"json:"id"`
-
-	// e-mail address from user - will be used as "user-name"
-	EMailAddress string `gorm:"unique"json:"eMailAddress"binding:"required"`
-
-	// That's the user input by account creation or for verification
-	Password string `gorm:"-"json:"password"binding:"required"`
-
-	// That's the persisted password in db
-	PasswordHashed string
+	Id string `gorm:"primary_key"json:"id"`
 
 	// Many to Many relation trough user_notes linkage
 	Notes []*Note `gorm:"many2many:user_notes;"`
