@@ -8,14 +8,16 @@ import "kaki-ireru/internal/models"
 	return
 }*/
 
-func FindNotes(user *models.User) (notes []*models.Note, err error) {
+func FindNotes(user *models.User) (*models.Notes, error) {
 	/*err = Db.FirstOrCreate(&user).Error
 	if err != nil {
 		return nil, err
 	}*/
 	//err = Db.Model(&user).Related(&notes, "Notes").Error
-	err = Db.Model(&user).Association("Notes").Find(&notes).Error
-	return
+	var notes []*models.Note
+	err := Db.Model(&user).Association("Notes").Find(&notes).Error
+
+	return &models.Notes{Notes: notes}, err
 }
 
 // Get the specified note or return an error if there is no note

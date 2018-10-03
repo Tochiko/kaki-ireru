@@ -9,3 +9,8 @@ type Note struct {
 	Done bool `json:"done"`
 	// User string `json:"-"`
 }
+
+type Notes struct {
+	Count int `json:"count"`
+	Notes []*Note `json:"notes"`
+}
