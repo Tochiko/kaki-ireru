@@ -2,29 +2,29 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"kaki-ireru/internal/provider"
-	"kaki-ireru/web/routes"
+	"kaki-ireru/web/controllers"
+	"kaki-ireru/web/middleware"
+	"kaki-ireru/web/models"
 	"os"
 )
 
-// First: Open db connection pool
-// Second: Initialize the provider from internal package
-// Third: Create the gin router and run it
 func main () {
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
-	if err != nil {
-		panic("failed to connect to database")
-	}
+	db := models.NewDB(os.Getenv("DATABASE_URL"))
 	defer db.Close()
-	// todo: remove the following line - is only for some tests
+
+	env := controllers.Env{Db: db}
+	router := gin.Default()
+
+	notes := router.Group("/items")
+	notes.Use(middleware.TokenDecoding)
+	notes.GET("/", env.AllItems)
+	notes.GET("/:id", env.ItemById)
+	notes.POST("/", env.CreateItem)
+
 	/*db.Exec("DROP TABLE users;")
 	db.Exec("DROP TABLE notes;")
 	db.Exec("DROP TABLE user_notes;")*/
-	provider.InitDatabase(db)
 
-	router := gin.Default()
-	routes.RegistryRoutes(router)
 	router.Run()
 }

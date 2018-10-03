@@ -40,9 +40,18 @@ func TokenDecoding (c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": err.Error()})
 		return
 	}
+
+	// extract the user id from claims it's not more needed at this time
+	claims := token.Claims.(jwt.MapClaims)
+	userId := claims["sub"]
+	if userId == "" {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "Unknown identity"})
+		return
+	}
+
 	// if everything worked well remove the www-authenticate header and set token claims to context
 	c.Header("WWW-Authenticate", "")
-	c.Set("decoded", token.Claims)
+	c.Set("userId", userId)
 }
 
 /**
