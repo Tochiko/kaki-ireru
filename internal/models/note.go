@@ -7,4 +7,10 @@ type Note struct {
 	Title string `json:"title"binding:"required"`
 	Description string `json:"description"binding:"required"`
 	Done bool `json:"done"`
+	// User string `json:"-"`
+}
+
+type Notes struct {
+	Count int `json:"count"`
+	Notes []*Note `json:"notes"`
 }

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/kataras/iris/core/errors"
@@ -9,6 +9,19 @@ import (
 	"os"
 	"strings"
 )
+
+type Jwks struct {
+	Keys []JSONWebKeys `json:"keys"`
+}
+
+type JSONWebKeys struct {
+	Kty string `json:"kty"`
+	Kid string `json:"kid"`
+	Use string `json:"use"`
+	N string `json:"n"`
+	E string `json:"e"`
+	X5c []string `json:"x5c"`
+}
 
 // Middleware function for gin gonic
 // Bearer tokens are decoded and set to context
@@ -64,12 +77,15 @@ func parseToken (tokenString string) (token *jwt.Token, err error) {
 	// parse the token string into a jwt token
 	// the inner function is initially checking if tokens signing method can be cast with SigningMethodHMAC
 	// if the cast has success so tokens method is ok and the private key is returned from inner function
-	token, err = jwt.Parse(tokenString, func (t *jwt.Token) (interface{}, error) {
+	/*token, err = jwt.Parse(tokenString, func (t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf(errorMessage)
 		}
 		return []byte(os.Getenv("HS_PRIVATE_KEY")), nil
-	})
+	})*/
+
+	token, err = jwt.Parse(tokenString, keyFunc)
+
 	// if an error is occurred by parsing the token string then set the err
 	if err != nil {
 		err = errors.New(errorMessage)
@@ -81,4 +97,56 @@ func parseToken (tokenString string) (token *jwt.Token, err error) {
 		return
 	}
 	return
+}
+
+func keyFunc(token *jwt.Token) (interface{}, error) {
+	aud := os.Getenv("AUTH0_AUDIENCE")
+	checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
+	if !checkAud {
+		return token, errors.New("Invalid audience.")
+	}
+	// Verify 'iss' claim
+	iss := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
+	checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
+	if !checkIss {
+		return token, errors.New("Invalid issuer.")
+	}
+
+	cert, err := getPemCert(token)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	result, _ := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
+	return result, nil
+}
+
+func getPemCert(token *jwt.Token) (string, error) {
+	cert := ""
+	resp, err := http.Get("https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json")
+
+	if err != nil {
+		return cert, err
+	}
+	defer resp.Body.Close()
+
+	var jwks = Jwks{}
+	err = json.NewDecoder(resp.Body).Decode(&jwks)
+
+	if err != nil {
+		return cert, err
+	}
+
+	for k := range jwks.Keys {
+		if token.Header["kid"] == jwks.Keys[k].Kid {
+			cert = "-----BEGIN CERTIFICATE-----\n" + jwks.Keys[k].X5c[0] + "\n-----END CERTIFICATE-----"
+		}
+	}
+
+	if cert == "" {
+		err := errors.New("Unable to find appropriate key.")
+		return cert, err
+	}
+
+	return cert, nil
 }
