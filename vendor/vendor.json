@@ -45,6 +45,13 @@
 			"revisionTime": "2018-08-21T05:17:52Z"
 		},
 		{
+			"checksumSHA1": "ERbMoXgQbtXljNjPl00Se+3sA8U=",
+			"origin": "github.com/kataras/iris/vendor/github.com/iris-contrib/go.uuid",
+			"path": "github.com/iris-contrib/go.uuid",
+			"revision": "44674201c83b18548b26bcf06e63e491b26dea39",
+			"revisionTime": "2018-08-22T23:46:58Z"
+		},
+		{
 			"checksumSHA1": "K2x9czFwwfYcB6GyZCqZmJsa7gE=",
 			"path": "github.com/jinzhu/gorm",
 			"revision": "32455088f24d6b1e9a502fb8e40fdc16139dbea8",
@@ -61,6 +68,12 @@
 			"path": "github.com/jinzhu/inflection",
 			"revision": "04140366298a54a039076d798123ffa108fff46c",
 			"revisionTime": "2018-03-08T03:36:59Z"
+		},
+		{
+			"checksumSHA1": "Z5bTUcLPpxJB2WrYpCs0oYs7IbQ=",
+			"path": "github.com/kataras/iris/core/errors",
+			"revision": "44674201c83b18548b26bcf06e63e491b26dea39",
+			"revisionTime": "2018-08-22T23:46:58Z"
 		},
 		{
 			"checksumSHA1": "xvqMCXXlR74in/1c09UadpfXz9Y=",
