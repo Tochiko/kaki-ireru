@@ -125,7 +125,7 @@ func keyFunc(token *jwt.Token) (interface{}, error) {
 	// parse the token with pem certificate
 	result, err := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
 	if err != nil {
-		return token, nil
+		return token, err
 	}
 
 	// if everything worked well return the parsed token as interface{}
